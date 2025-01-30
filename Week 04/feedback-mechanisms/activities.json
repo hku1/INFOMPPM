@@ -1,0 +1,26 @@
+[
+    {
+        "content_id": 32,
+        "activity": "Select Season",
+        "user_id": "dennis",
+        "datetime": "2024-03-05 13:55:30.893577"
+    },
+    {
+        "content_id": 31,
+        "activity": "Select Season",
+        "user_id": "dennis",
+        "datetime": "2024-03-05 13:55:37.128723"
+    },
+    {
+        "content_id": "tt11873248",
+        "activity": "Select Episode",
+        "user_id": "dennis",
+        "datetime": "2024-03-05 13:55:42.058131"
+    },
+    {
+        "content_id": "tt11873248",
+        "activity": "Like",
+        "user_id": "dennis",
+        "datetime": "2024-03-05 13:55:52.008147"
+    }
+]
