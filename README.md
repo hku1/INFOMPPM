@@ -50,6 +50,13 @@ During the seminar, we will critically discuss different metrics for (public) va
 ### Week 07
 ...
 
+## Running the code
+### Creating a virtual environment
+See the [official Python documentation on working with virtual environments](https://docs.python.org/3/library/venv.html). The dependencies were tested against Python 3.11.10
+
+Next install any requirements you need for the week's assignments, at a minimum: `pip install jupyter streamlit`
+
+Start the notebook server and launch the interface using `jupyter notebook`
 
 
 ## Authors
