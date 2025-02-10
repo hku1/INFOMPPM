@@ -62,7 +62,7 @@ if st.session_state["authentication_status"]:
 
     with col1:
         # Displaying the episode image
-        st.image(df_episode['image'], use_column_width='always')
+        st.image(df_episode['image'], use_container_width=True)
 
     with col2:
         # Displaying episode details

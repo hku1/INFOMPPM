@@ -7,7 +7,7 @@ def select_book(isbn):
 
 def tile_item(column, item):
   with column:
-    st.image(item['Image-URL-M'], use_column_width='always')
+    st.image(item['Image-URL-M'], use_container_width=True)
     st.caption(item['Book-Title'])
 
 def recommendations(df):

@@ -40,7 +40,7 @@ def select_season(s):
 def tile_item(column, item):
     with column:
         # Displaying the item image, title, and a short summary
-        st.image(item['image'], use_column_width='always')
+        st.image(item['image'], use_container_width=True)
         st.markdown(item['title'])
         st.caption(item['summary'][:50] + (item['summary'][50:] and '..'))  # Shortening the summary
         st.caption('Season ' + str(item['season']) + ' | episode ' + str(item['episode']) + ' | Rating ' + str(item['rating']) + ' | ' + str(item['votes']) + ' votes')
