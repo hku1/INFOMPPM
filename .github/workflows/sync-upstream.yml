@@ -24,8 +24,13 @@ jobs:
 
       - name: Add Upstream Remote
         run: |
-          git remote add upstream https://github.com/CentreForDigitalHumanities/INFOMPPM.git
+          git remote add upstream https://github.com/CentreForDigitalHumanities/INFOMPPM.git || echo "Upstream already exists"
           git fetch upstream
+
+      - name: Ensure Main Branch Exists
+        run: |
+          git fetch origin main
+          git checkout main
 
       - name: Merge Upstream Changes
         run: |
