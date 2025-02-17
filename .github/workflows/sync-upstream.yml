@@ -31,9 +31,9 @@ jobs:
         run: |
           git checkout main
           git pull --rebase upstream main
-
+     
       - name: Push Changes to Fork
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        MY_PAT: ${{ secrets.infoppm }}
         run: |
-          git push origin main
+    git push https://x-access-token:${MY_PAT}@github.com/your-username/private-repo.git main || echo "No changes to push"
