@@ -13,10 +13,11 @@ import matplotlib.pyplot as plt
 matplotlib.use('Qt5Agg')
 
 # create file_path to data directory
-file_path = os.path.join(os.getcwd(), 'seminars/Week 01/')
+data_dir = os.path.join(os.getcwd(), 'Week 01', 'data')
+app_dir = os.path.join(os.getcwd(), 'Week 01', 'app')
 
 # load data
-books = pd.read_csv(file_path + '/data/user_reviews.csv')
+books = pd.read_csv(os.path.join(data_dir, 'user_reviews.csv'))
 
 # 1. Calculate the average ratings
 # Calculate the average ratings and the number of reviews (count) for the books in your new dataset(s).
@@ -80,9 +81,54 @@ top_10_weighted_ratings.to_csv(file_path + 'app/recommendations/recommendations-
 # Create combinations of books reviewed by same user with permutations and count how often each combination occurs. This process might be time-consuming,
 # depending on your initial data exploration.
 
+# note: for demo purposes, we will use a subset of the data, as the full dataset is too large to process in a reasonable amount of time
+# keep only users with 10 or more book ratings and remove ratins with 0
+
+books = books[books['Book-Rating'] != 0]
+
+x = books['ISBN'].value_counts() >= 20
+idx = x[x].index
+ratings = books[books['ISBN'].isin(idx)]
+
+x = ratings['User-ID'].value_counts() >= 10
+idx = x[x].index
+books = ratings[ratings['User-ID'].isin(idx)]
+
+books.shape
+
 from itertools import permutations
 
+def create_combinations(x):
+    ''''
+    function to create combinations of books reviewed by the same user
+    x: pandas series containing the ISBNs reviewed by a user
+    '''
 
+    # create combinations of 2 books
+    combinations = pd.DataFrame(list(permutations(x.values, 2)), columns=['book_a', 'book_b'])
+
+    return combinations
+
+# use the function to create combinations
+
+book_combinations = books.groupby('User-ID')['ISBN'].apply(create_combinations)
+
+book_combinations = book_combinations.reset_index(drop=True)
+
+# count the combinations
+
+combinations_counts = book_combinations.groupby(['book_a', 'book_b']).size()
+combinations_counts = combinations_counts.to_frame(name='count').reset_index()
+
+# keep top 10 and write to csv file
+
+combinations_counts = combinations_counts.sort_values('count', ascending=False)
+
+# only select top 10 per combination
+
+df1 = combinations_counts.sort_values('count', ascending=False).groupby('book_a').head(10)
+
+df1.to_csv(os.path.join(app_dir, 'recommendations-seeded-freq.csv'), index=False, sep=';')
 
 
 
