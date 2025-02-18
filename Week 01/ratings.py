@@ -131,10 +131,105 @@ df1 = combinations_counts.sort_values('count', ascending=False).groupby('book_a'
 df1.to_csv(os.path.join(app_dir, 'recommendations-seeded-freq.csv'), index=False, sep=';')
 
 
+# Recommendations based on Frequently Reviewed Together (association rules)
+# For the final segment of this assignment, refer to section 5.4 of the Practical Recommender Systems book (pages 113-127). After reading, download the code provided by the book and focus on the association_rules_calculator.py in the builder directory. Your task is to adapt this code for use in this notebook, translating its steps into a format suitable for our environment. Here's a simplified outline based on the source code:
+#
+# The steps found in the source code are:
+#
+# Load the data
+# Generate transactions or, in our case reviews
+# Calculate the Support Confidence
+# Save the results
+
+df_users = books.groupby('User-ID')['ISBN'].count().reset_index(name='counts')
+users = list(df_users[(df_users['counts'] > 100) & (df_users['counts'] < 200)]['User-ID'])
+
+# books.loc[books['User-ID'].isin(users)]
+
+# 2. Generating the reviews
+# In this context, transactions are the reviews. You need to compile a list of lists, where each inner list contains
+# reviews that are related, similar to how shopping lists are grouped in the example: [['eggs','milk','bread'], ['bacon', 'bread'], [...], [...]]
 
 
+df_reviews = books.groupby('User-ID')['ISBN'].apply(list)
+reviewed = df_reviews.values.tolist()
+
+# 3. Calculate the Support Confidence
+# This requires some puzzling, but looking at the source code will give you a clear idea. You can reuse the subroutines in the source code and pass along the list containing the reviews belonging together. Play around with the minimum support parameter. Too strict will result in fewer associations.
 
 
+# this code originated from the book Practical Recommender System.
+# Some minor tweaks to make it work with the current dataset.
+
+from collections import defaultdict
+from itertools import combinations
+from datetime import datetime
+
+def calculate_itemsets_one(reviewed, min_sup=0.01):
+    N = len(reviewed)
+    print(N)
+    temp = defaultdict(int)
+    one_itemsets = dict()
+
+    for items in reviewed:
+        for item in items:
+            inx = frozenset({item})
+            temp[inx] += 1
+
+    print("temp:")
+    i = 0
+    # remove all items that is not supported.
+    for key, itemset in temp.items():
+        #print(f"{key}, {itemset}, {min_sup}, {min_sup * N}")
+        if itemset > min_sup * N:
+            i = i + 1
+            one_itemsets[key] = itemset
+    print(i)
+    return one_itemsets
+
+def calculate_itemsets_two(reviewed, one_itemsets):
+    two_itemsets = defaultdict(int)
+
+    for items in reviewed:
+        items = list(set(items))  # remove duplications
+
+        if (len(items) > 2):
+            for perm in combinations(items, 2):
+                if has_support(perm, one_itemsets):
+                    two_itemsets[frozenset(perm)] += 1
+        elif len(items) == 2:
+            if has_support(items, one_itemsets):
+                two_itemsets[frozenset(items)] += 1
+    return two_itemsets
+
+def calculate_association_rules(one_itemsets, two_itemsets, N):
+    timestamp = datetime.now()
+
+    rules = []
+    for source, source_freq in one_itemsets.items():
+        for key, group_freq in two_itemsets.items():
+            if source.issubset(key):
+                target = key.difference(source)
+                support = group_freq / N
+                confidence = group_freq / source_freq
+                rules.append((timestamp, next(iter(source)), next(iter(target)),
+                              confidence, support))
+    return rules
+
+def has_support(perm, one_itemsets):
+  return frozenset({perm[0]}) in one_itemsets and \
+    frozenset({perm[1]}) in one_itemsets
+
+
+min_sup = 0.01
+N = len(reviewed)
+
+one_itemsets = calculate_itemsets_one(reviewed, min_sup)
+two_itemsets = calculate_itemsets_two(reviewed, one_itemsets)
+rules = calculate_association_rules(one_itemsets, two_itemsets, N)
+
+# check how many associations are made
+len(rules)
 
 
 
