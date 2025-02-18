@@ -35,7 +35,8 @@ jobs:
       - name: Merge Upstream Changes
         run: |
           git checkout main
-          git merge -s ours upstream/main
+          git merge --allow-unrelated-histories -s ours upstream/main
+
      
       - name: Push Changes to Fork
         env:
