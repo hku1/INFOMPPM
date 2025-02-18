@@ -16,7 +16,6 @@ import matplotlib.pyplot as plt
 # pip install PyQt5
 matplotlib.use('Qt5Agg')
 
-
 # current working directory
 os.getcwd()
 
@@ -279,6 +278,18 @@ zero_ratings = reviews_users['Book-Rating'].value_counts().get(0, 0)
 
 fraction_zero = zero_ratings / len(reviews_users)
 
+# reduce # of reviews for demo purposes
+
+books = books[books['Book-Rating'] != 0]
+
+x = books['ISBN'].value_counts() >= 20
+idx = x[x].index
+ratings = books[books['ISBN'].isin(idx)]
+
+x = ratings['User-ID'].value_counts() >= 10
+idx = x[x].index
+books = ratings[ratings['User-ID'].isin(idx)]
+
 # Examine the BX-Books.csv file specifically for the book Robots and Empire by Isaac Asimov.
 # Identify any issues you come across. Would you address these issues?
 
@@ -286,4 +297,6 @@ rbts_empire = books[(books['Book-Title'] == 'Robots and Empire') & (books['Book-
 
 # write user_reviews to csv
 
-reviews_users.to_csv(file_path + '/user_reviews.csv', index=False)
+reviews_users.to_csv(data_dir + '/user_reviews.csv', index=False)
+
+# books.to_csv(data_dir + '/user_reviews.csv', index=False)
