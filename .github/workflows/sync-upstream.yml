@@ -40,6 +40,6 @@ jobs:
      
       - name: Push Changes to Fork
         env:
-          MY_PAT: ${{ secrets.infoppm }}
+          MY_PAT: ${{ secrets.INFOPPM }}
         run: |
           git push https://x-access-token:${MY_PAT}@github.com/hku1/INFOMPPM.git main || echo "No changes to push"
