@@ -42,4 +42,4 @@ jobs:
         env:
           MY_PAT: ${{ secrets.infoppm }}
         run: |
-          git push https://x-access-token:${MY_PAT}@github.com/your-username/private-repo.git main || echo "No changes to push"
+          git push https://x-access-token:${MY_PAT}@github.com/hku1/INFOMPPM.git main || echo "No changes to push"
