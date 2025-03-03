@@ -23,11 +23,13 @@ authenticator = stauth.Authenticate(
     config['cookie']['name'],  # Cookie name for session management
     config['cookie']['key'],  # Key for cookie encryption
     config['cookie']['expiry_days'],  # Cookie expiry in days
-    config['preauthorized']  # Preauthorized users
 )
 
 # Logging out any existing session
-authenticator.logout()       
+try:
+    authenticator.logout()
+except stauth.utilities.exceptions.LogoutError:
+    pass     
 
 # Handling authentication status
 if st.session_state["authentication_status"]:
